@@ -107,7 +107,7 @@ class H2o_Context implements ArrayAccess {
 	
         # Lookup basic types, null, boolean, numeric and string
         # Variable starts with : (:users.name) to short-circuit lookup
-        if ($name[0] === ':') {
+        if ($name && $name[0] === ':') {
             $object =  $this->getVariable(substr($name, 1));
             if (!is_null($object)) $result = $object;
         } else {
