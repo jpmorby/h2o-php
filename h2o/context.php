@@ -26,7 +26,7 @@ class H2o_Context implements ArrayAccess {
             
         $this->options = $options;
     }
-
+    #[\ReturnTypeWillChange]
     function push($layer = array()){
         return array_unshift($this->scopes, $layer);
     }
@@ -34,19 +34,20 @@ class H2o_Context implements ArrayAccess {
     /**
      * pop the most recent layer
      */
+    #[\ReturnTypeWillChange]
     function pop() {
         if (!isset($this->scopes[1]))
             throw new Exception('cannnot pop from empty stack');
         return array_shift($this->scopes);
     }
-
+    #[\ReturnTypeWillChange]
     function offsetExists($offset) {
         foreach ($this->scopes as $layer) {
             if (isset($layer[$offset])) return true;
         }
         return false;
     }
-
+    #[\ReturnTypeWillChange]
     function offsetGet($key) {
         foreach ($this->scopes as $layer) {
             if (isset($layer[$key]))
@@ -54,31 +55,31 @@ class H2o_Context implements ArrayAccess {
         }
         return;
     }
-    
+    #[\ReturnTypeWillChange]    
     function offsetSet($key, $value) {
         if (strpos($key, '.') > -1)
             throw new Exception('cannot set non local variable');
         return $this->scopes[0][$key] = $value;
     }
-    
+    #[\ReturnTypeWillChange]    
     function offsetUnset($key) {
         foreach ($this->scopes as $layer) {
             if (isset($layer[$key])) unset($layer[$key]);
         }
     }
-
+    #[\ReturnTypeWillChange]
     function extend($context) {
         $this->scopes[0] = array_merge($this->scopes[0], $context);
     }
-
+    #[\ReturnTypeWillChange]
     function set($key, $value) {
         return $this->offsetSet($key, $value);
     }
-
+    #[\ReturnTypeWillChange]
     function get($key) {
         return $this->offsetGet($key);
     }
-
+    #[\ReturnTypeWillChange]
     function isDefined($key) {
         return $this->offsetExists($key);
     }
@@ -91,6 +92,7 @@ class H2o_Context implements ArrayAccess {
      * @param $var variable name or array(0 => variable name, 'filters' => filters array)
      * @return unknown_type
      */
+    #[\ReturnTypeWillChange]
     function resolve($var) {
 
         # if $var is array - it contains filters to apply
@@ -131,7 +133,7 @@ class H2o_Context implements ArrayAccess {
         $result = $this->applyFilters($result,$filters);
         return $result;
     }
-        
+    #[\ReturnTypeWillChange]        
     function getVariable($name) {
         # Local variables. this gives as a bit of performance improvement
         if (!strpos($name, '.'))
@@ -174,7 +176,7 @@ class H2o_Context implements ArrayAccess {
         }
         return $object;
     }
-
+    #[\ReturnTypeWillChange]
     function applyFilters($object, $filters) {
         
         foreach ($filters as $filter) {
@@ -199,7 +201,7 @@ class H2o_Context implements ArrayAccess {
         }
         return $object;
     }
-
+    #[\ReturnTypeWillChange]
     function escape($value, $var) {
 		
         $safe = false;
@@ -221,7 +223,7 @@ class H2o_Context implements ArrayAccess {
         
         return $value;
 	}
-
+    #[\ReturnTypeWillChange]
     function externalLookup($name) {
         if (!empty(self::$lookupTable)) {
             foreach (self::$lookupTable as $lookup) {
